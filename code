@@ -1,0 +1,75 @@
+def obter_valor_numerico(prompt, tipo=float):
+    """
+    Solicita um valor numérico ao usuário e garante que a entrada seja válida.
+    """
+    while True:
+        try:
+            valor = tipo(input(prompt))
+            if valor < 0:
+                print("Por favor, digite um valor maior ou igual a zero.")
+                continue
+            return valor
+        except ValueError:
+            print("Entrada inválida! Digite apenas números.")
+
+def main():
+    print("=" * 40)
+    print("       SISTEMA DE CAIXA DE MERCADO      ")
+    print("=" * 40)
+    
+    # ENTRADA DO CLIENTE
+    cliente = input("Qual é seu nome? ").strip()
+    if not cliente:
+        cliente = "Consumidor"
+        
+    itens = []
+    total_itens = 3  # Padrão de 3 itens conforme o código original
+    
+    # ENTRADA DOS ITENS
+    for i in range(1, total_itens + 1):
+        print(f"\n--- Item {i} ---")
+        qtd = obter_valor_numerico(f"Quantidade do item {i}: ", int)
+        preco = obter_valor_numerico(f"Preço do item {i}? R$ ")
+        
+        total_item = qtd * preco
+        itens.append({
+            "nome": f"Item {i}",
+            "qtd": qtd,
+            "preco": preco,
+            "total": total_item
+        })
+
+    # CÁLCULOS
+    subtotal = sum(item["total"] for item in itens)
+    imposto = subtotal * 0.10
+
+    # DESCONTO
+    print("\n--- Desconto ---")
+    desconto_cupom = obter_valor_numerico("Você tem um cupom de desconto? (Digite o percentual ou 0): ")
+    desconto = subtotal * (desconto_cupom / 100)
+
+    # TOTAL FINAL
+    total = subtotal + imposto - desconto
+
+    # EXIBIÇÃO DO CUPOM FISCAL
+    linha = "=" * 40
+    separador = "-" * 40
+
+    print("\n" + linha)
+    print(f" Cliente: {cliente}")
+    print(linha)
+    
+    for i, item in enumerate(itens, 1):
+        print(f" {item['nome']}: {item['qtd']}x R$ {item['preco']:.2f} -> R$ {item['total']:.2f}")
+        
+    print(separador)
+    print(f" Subtotal:      R$ {subtotal:.2f}")
+    print(f" Imposto (10%): R$ {imposto:.2f}")
+    if desconto_cupom > 0:
+        print(f" Desconto ({desconto_cupom:.0f}%): -R$ {desconto:.2f}")
+    print(linha)
+    print(f" TOTAL:         R$ {round(total, 2):.2f}")
+    print(linha)
+
+if __name__ == "__main__":
+    main()
